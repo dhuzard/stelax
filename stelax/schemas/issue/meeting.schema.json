@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Meeting Issue Schema",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "attendees": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "outcomes": {
+      "type": "string"
+    }
+  },
+  "required": ["date", "attendees", "summary"]
+}

@@ -1,0 +1,20 @@
+{
+  "allowed_mounts": [
+    {
+      "source": "/mnt/data/stelax-memory",
+      "target": "/workspace/memory_repo",
+      "readonly": true
+    },
+    {
+      "source": "/mnt/data/scratch-${worker_id}",
+      "target": "/workspace/scratch",
+      "readonly": false
+    }
+  ],
+  "forbidden_mounts": [
+    "~",
+    "/var/run/docker.sock",
+    "/etc",
+    "/.ssh"
+  ]
+}

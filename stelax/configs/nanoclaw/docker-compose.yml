@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  nanoclaw-worker:
+    image: ghcr.io/your-org/nanoclaw-worker:latest
+    env_file: .env
+    restart: always
+    # Security note: Do NOT mount /var/run/docker.sock into this container!
+    volumes:
+      - ./mounts.example.json:/etc/nanoclaw/mount_policy.json:ro
+      - ./channels:/etc/nanoclaw/channels:ro

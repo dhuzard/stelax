@@ -1,0 +1,5 @@
+{
+  "channel_id": "founders",
+  "description": "Restricted channel for operations requiring founder approval",
+  "allowed_teams": ["@your-org/founders"]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Task Issue Schema",
+  "properties": {
+    "objective": {
+      "type": "string"
+    },
+    "requirements": {
+      "type": "string"
+    },
+    "context": {
+      "type": "string"
+    }
+  },
+  "required": ["objective", "requirements"]
+}

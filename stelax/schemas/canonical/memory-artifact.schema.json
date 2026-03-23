@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Memory Artifact Schema",
+  "properties": {
+    "artifact_id": {
+      "type": "string"
+    },
+    "source_issue_number": {
+      "type": "integer"
+    },
+    "source_issue_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["meeting", "decision", "task"]
+    },
+    "export_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "content": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "artifact_id",
+    "source_issue_number",
+    "source_issue_url",
+    "type",
+    "export_timestamp",
+    "content"
+  ]
+}

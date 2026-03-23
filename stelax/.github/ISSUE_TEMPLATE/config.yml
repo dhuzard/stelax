@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: STELAX Runbooks
+    url: https://github.com/your-org/stelax/tree/main/docs/runbooks.md
+    about: Read the runbooks for system operations.

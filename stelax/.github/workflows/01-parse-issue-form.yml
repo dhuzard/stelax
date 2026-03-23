@@ -1,0 +1,27 @@
+name: 01 Parse Issue Form
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse Issue Body
+        id: parse
+        uses: peter-murray/issue-forms-body-parser@v3
+        with:
+          issue_id: ${{ github.event.issue.number }}
+          separator: '###'
+          label_marker_start: '>>'
+          label_marker_end: '<<'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Save Parsed Output
+        run: |
+          echo '${{ steps.parse.outputs.payload }}' > parsed_issue.json
+          # Note: A real implementation would upload this as an artifact or pass to the triage job

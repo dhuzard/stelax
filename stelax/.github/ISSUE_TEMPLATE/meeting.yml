@@ -1,0 +1,34 @@
+name: Meeting Notes
+description: Log details and outcomes of a meeting.
+title: "[Meeting]: "
+labels: ["intake:meeting"]
+body:
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      description: When did this meeting occur?
+      placeholder: "YYYY-MM-DD"
+    validations:
+      required: true
+  - type: input
+    id: attendees
+    attributes:
+      label: Attendees
+      description: Who attended?
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: High-level summary of the discussion.
+    validations:
+      required: true
+  - type: textarea
+    id: outcomes
+    attributes:
+      label: Outcomes & Action Items
+      description: What was decided or assigned?
+    validations:
+      required: false

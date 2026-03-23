@@ -1,0 +1,26 @@
+name: Task Request
+description: Request a specific task to be executed.
+title: "[Task]: "
+labels: ["intake:task"]
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What needs to be done?
+    validations:
+      required: true
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: Specific acceptance criteria or constraints.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any background information, links, or references.
+    validations:
+      required: false

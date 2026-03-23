@@ -1,0 +1,26 @@
+name: Decision Record
+description: Log a formal technical or product decision.
+title: "[Decision]: "
+labels: ["intake:decision"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What is the context for this decision?
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision
+      description: What was decided?
+    validations:
+      required: true
+  - type: textarea
+    id: consequences
+    attributes:
+      label: Consequences
+      description: What are the trade-offs or next steps resulting from this?
+    validations:
+      required: false

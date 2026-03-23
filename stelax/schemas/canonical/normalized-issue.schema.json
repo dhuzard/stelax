@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Normalized Issue Schema",
+  "properties": {
+    "source_issue_number": {
+      "type": "integer"
+    },
+    "source_issue_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "intake_type": {
+      "type": "string",
+      "enum": ["meeting", "decision", "task"]
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "structured_fields": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "triage_decision": {
+      "type": "string",
+      "enum": ["kanban", "needs-info", "rejected"]
+    },
+    "triage_reason": {
+      "type": "string"
+    },
+    "ready_for_kanban": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "source_issue_number",
+    "source_issue_url",
+    "intake_type",
+    "title",
+    "structured_fields",
+    "triage_decision",
+    "ready_for_kanban"
+  ]
+}

@@ -1,0 +1,40 @@
+name: 04 Export Memory
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout memory repository
+        uses: actions/checkout@v4
+        with:
+          repository: your-org/stelax-memory
+          token: ${{ secrets.MEMORY_REPO_PAT }}
+          path: memory-repo
+          
+      - name: Checkout STELAX repository
+        uses: actions/checkout@v4
+        with:
+          path: stelax-repo
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          cd stelax-repo/apps/exporter
+          pip install -e .
+
+      - name: Run Exporter
+        run: |
+          cd stelax-repo/apps/exporter
+          python exporter/export_memory.py --memory-dir ../../../memory-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERITAS_API_KEY: ${{ secrets.VERITAS_API_KEY }}

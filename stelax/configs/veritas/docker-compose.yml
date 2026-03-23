@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  veritas-core:
+    image: ghcr.io/your-org/veritas:latest
+    ports:
+      - "8080:8080"
+    env_file: .env
+    volumes:
+      - ./integrations.example.json:/app/config/integrations.json:ro
+    restart: unless-stopped
