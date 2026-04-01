@@ -1,0 +1,45 @@
+name: Incident Report
+description: Log a production incident, outage, or service degradation.
+title: "[Incident]: "
+labels: ["intake:incident"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this incident?
+      options:
+        - "sev0 — Complete outage"
+        - "sev1 — Major degradation"
+        - "sev2 — Partial impact"
+        - "sev3 — Minor issue"
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What systems or users are affected?
+    validations:
+      required: true
+  - type: textarea
+    id: timeline
+    attributes:
+      label: Timeline
+      description: Chronology of events (can be filled in after resolution).
+    validations:
+      required: false
+  - type: textarea
+    id: resolution
+    attributes:
+      label: Resolution
+      description: What resolved the incident? Leave blank if still ongoing.
+    validations:
+      required: false
+  - type: textarea
+    id: action_items
+    attributes:
+      label: Action Items
+      description: Steps to prevent recurrence.
+    validations:
+      required: false

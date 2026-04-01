@@ -16,6 +16,9 @@ def export_artifacts(memory_dir):
     os.makedirs(os.path.join(memory_dir, "tasks/2026"), exist_ok=True)
     os.makedirs(os.path.join(memory_dir, "meetings/2026"), exist_ok=True)
     os.makedirs(os.path.join(memory_dir, "decisions/2026"), exist_ok=True)
+    os.makedirs(os.path.join(memory_dir, "incidents/2026"), exist_ok=True)
+    os.makedirs(os.path.join(memory_dir, "retros/2026"), exist_ok=True)
+    os.makedirs(os.path.join(memory_dir, "proposals/2026"), exist_ok=True)
     
     print("Export completed successfully.")
 

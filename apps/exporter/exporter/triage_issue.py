@@ -7,7 +7,21 @@ REQUIRED_FIELDS = {
     "task":     ["Objective", "Requirements"],
     "meeting":  ["Date", "Attendees", "Summary"],
     "decision": ["Context", "Decision"],
+    "incident": ["Severity", "Impact"],
+    "retro":    ["Period", "What Went Well", "What Didn't Go Well"],
+    "proposal": ["Problem", "Proposed Solution"],
 }
+
+# Severity level → priority for incidents.
+SEVERITY_PRIORITY_MAP = {
+    "sev0": "p0",
+    "sev1": "p0",
+    "sev2": "p1",
+    "sev3": "p2",
+}
+
+# Intake types that get priority tagging.
+PRIORITY_TYPED = {"task", "proposal", "incident"}
 
 # Keyword sets used to infer priority when no explicit Priority field is set.
 # Checked in order — first match wins.
@@ -28,20 +42,29 @@ EXPLICIT_PRIORITY_MAP = {
 }
 
 
-def _infer_priority(structured_fields):
-    """Return a priority level for a task issue.
+def _infer_priority(intake_type, structured_fields):
+    """Return a priority level for a prioritisable intake type.
 
-    Explicit Priority field takes precedence; falls back to keyword scanning
-    of the Objective and Requirements text; defaults to p2 (normal).
+    Incidents derive priority from the Severity field.
+    Tasks and proposals use an explicit Priority dropdown with keyword fallback.
     """
+    if intake_type == "incident":
+        raw = structured_fields.get("Severity", "").strip().lower()
+        # Normalise "sev0 — complete outage" → "sev0"
+        sev_key = raw.split()[0] if raw else ""
+        return SEVERITY_PRIORITY_MAP.get(sev_key, DEFAULT_PRIORITY)
+
     explicit = structured_fields.get("Priority", "").strip().lower()
     if explicit in EXPLICIT_PRIORITY_MAP:
         return EXPLICIT_PRIORITY_MAP[explicit]
 
-    text = " ".join([
-        structured_fields.get("Objective", ""),
-        structured_fields.get("Requirements", ""),
-    ]).lower()
+    scan_fields = {
+        "task":     ["Objective", "Requirements"],
+        "proposal": ["Problem", "Proposed Solution"],
+    }
+    text = " ".join(
+        structured_fields.get(f, "") for f in scan_fields.get(intake_type, [])
+    ).lower()
 
     for level, keywords in PRIORITY_KEYWORDS.items():
         if any(kw in text for kw in keywords):
@@ -81,10 +104,10 @@ def triage(normalized_data):
         normalized_data["labels"] = _compute_labels(normalized_data)
         return normalized_data
 
-    # Priority tagging (tasks only)
+    # Priority tagging (tasks, proposals, incidents)
     priority = None
-    if intake_type == "task":
-        priority = _infer_priority(structured_fields)
+    if intake_type in PRIORITY_TYPED:
+        priority = _infer_priority(intake_type, structured_fields)
         normalized_data["priority"] = priority
 
     normalized_data["triage_decision"] = "kanban"

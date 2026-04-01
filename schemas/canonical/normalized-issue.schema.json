@@ -12,7 +12,7 @@
     },
     "intake_type": {
       "type": "string",
-      "enum": ["meeting", "decision", "task"]
+      "enum": ["meeting", "decision", "task", "incident", "retro", "proposal"]
     },
     "title": {
       "type": "string"

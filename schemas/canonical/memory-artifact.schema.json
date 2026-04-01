@@ -15,7 +15,7 @@
     },
     "type": {
       "type": "string",
-      "enum": ["meeting", "decision", "task"]
+      "enum": ["meeting", "decision", "task", "incident", "retro", "proposal"]
     },
     "export_timestamp": {
       "type": "string",

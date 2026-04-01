@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Proposal Issue Schema",
+  "properties": {
+    "problem": { "type": "string" },
+    "proposed_solution": { "type": "string" },
+    "alternatives": { "type": "string" },
+    "success_criteria": { "type": "string" }
+  },
+  "required": ["problem", "proposed_solution"]
+}
