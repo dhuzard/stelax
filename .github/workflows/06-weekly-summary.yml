@@ -1,0 +1,53 @@
+name: 06 Weekly Summary
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'   # Every Monday at 08:00 UTC
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Number of past days to include in the summary"
+        required: false
+        default: "7"
+
+jobs:
+  summarise:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout STELAX repo
+        uses: actions/checkout@v4
+        with:
+          path: stelax-repo
+
+      - name: Checkout memory repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ github.repository_owner }}-stelax-memory
+          token: ${{ secrets.MEMORY_REPO_PAT }}
+          path: memory-repo
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install exporter
+        run: |
+          cd stelax-repo/apps/exporter
+          pip install -e . --quiet
+
+      - name: Generate summary
+        run: |
+          python stelax-repo/apps/exporter/exporter/generate_summary.py \
+            --memory-dir memory-repo \
+            --days ${{ github.event.inputs.days || '7' }}
+
+      - name: Commit and push summary
+        run: |
+          cd memory-repo
+          git config user.name "STELAX Exporter"
+          git config user.email "stelax-exporter@noreply"
+          git add summaries/
+          git diff --cached --quiet || git commit -m "chore: weekly summary $(date +%Y-W%V)"
+          git push

@@ -1,0 +1,22 @@
+# Weekly Summary: {{ period_label }}
+
+_Generated: {{ generated_at }}_
+
+**Total artifacts exported:** {{ total }}
+
+---
+{% if total == 0 %}
+
+_No artifacts were exported in this period._
+{% else %}
+{% for type_name, items in groups.items() %}
+
+## {{ type_name | capitalize }} ({{ items | length }})
+
+{% for item in items %}
+- **[#{{ item.source_issue_number }}]({{ item.source_issue_url }})** `{{ item.artifact_id }}`
+{%- if item.metadata is defined and item.metadata.get('title') %}  — {{ item.metadata.title }}{% endif %}
+
+{% endfor %}
+{% endfor %}
+{% endif %}
