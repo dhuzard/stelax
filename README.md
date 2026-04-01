@@ -162,9 +162,51 @@ See [`docs/threat-model.md`](docs/threat-model.md) for the full breakdown.
 
 ---
 
-## Contributing
+## Roadmap & Future Ideas
 
-One PR per concern. PR titles follow the format `[area] imperative summary`. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full policy.
+STELAX is intentionally minimal today — a clean foundation rather than a bloated platform. Here are directions we think are worth exploring:
+
+### Near-term
+- **Real test suite** — replace the current smoke-test stub with proper pytest coverage for the normalize, triage, and export pipeline
+- **CLI bootstrap script** — a single `bootstrap.sh` to set up a fresh fork end-to-end, including memory repo creation and secret validation
+- **Richer triage rules** — priority scoring, SLA tagging, or team-based routing based on issue metadata
+- **Webhook-driven sync** — replace the every-5-minutes polling to Veritas with an event-driven push on issue label changes
+
+### Medium-term
+- **Additional intake types** — `incident.yml`, `retro.yml`, `proposal.yml` — each with its own schema, triage path, and memory template
+- **Multi-channel NanoClaw routing** — route tasks to different worker pools based on type, team, or required capabilities
+- **Memory diff summaries** — auto-generate weekly or sprint-level summaries from the exported artifacts in the memory repo
+- **Slack / Teams notifications** — post triage results and completion events to messaging channels without coupling them into the core pipeline
+
+### Longer-term
+- **Native knowledge agent integration** — a first-class search layer over the memory repo, queryable via GitHub Issues or a lightweight UI
+- **Audit trail UI** — a read-only dashboard showing the full lifecycle of any issue, from intake form to memory export
+- **Multi-repo intake** — allow multiple `<org>-stelax` instances to feed into a shared `<org>-stelax-memory`, useful for large orgs with multiple teams
+- **Policy-as-code for triage** — replace the hardcoded Python triage logic with a declarative rules file, so teams can customize routing without touching code
+
+Have an idea not listed here? Open a discussion or issue — we'd love to hear it.
+
+---
+
+## Contributing & Community
+
+STELAX is early and deliberately open-ended. If you fork it, extend it, or hit a wall, we want to know.
+
+**Ways to get involved:**
+
+- **Try it and report back** — fork the template, run it against your own workflow, and open an issue describing what worked and what didn't
+- **Suggest a feature** — open a [GitHub Issue](../../issues/new/choose) using the Task form (yes, this repo uses its own intake forms) and describe the problem you're trying to solve
+- **Contribute a fix or improvement** — read [`CONTRIBUTING.md`](CONTRIBUTING.md), pick something from the roadmap or your own ideas, and open a PR
+- **Share your instance** — if you've built something interesting on top of STELAX, open a Discussion and tell us about it
+
+**Good first contributions:**
+
+- Add real pytest tests for `normalize_issue.py` and `triage_issue.py`
+- Add a new intake type (e.g. `incident.yml`) with schema and Jinja2 template
+- Improve error messages in the triage workflow when required fields are missing
+- Write a `bootstrap.sh` that automates the Getting Started steps above
+
+All contributions follow the one-PR-per-concern policy in [`CONTRIBUTING.md`](CONTRIBUTING.md). Infrastructure and security changes require an additional reviewer — see the PR templates for details.
 
 ---
 
