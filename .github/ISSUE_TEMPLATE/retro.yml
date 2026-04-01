@@ -1,0 +1,34 @@
+name: Retrospective
+description: Record a sprint or period retrospective.
+title: "[Retro]: "
+labels: ["intake:retro"]
+body:
+  - type: input
+    id: period
+    attributes:
+      label: Period
+      description: Which sprint or time period does this cover?
+      placeholder: "e.g. 2026-Q1 or Sprint 12"
+    validations:
+      required: true
+  - type: textarea
+    id: went_well
+    attributes:
+      label: What Went Well
+      description: Things the team should keep doing.
+    validations:
+      required: true
+  - type: textarea
+    id: didnt_go_well
+    attributes:
+      label: What Didn't Go Well
+      description: Things the team should change or improve.
+    validations:
+      required: true
+  - type: textarea
+    id: action_items
+    attributes:
+      label: Action Items
+      description: Concrete steps to act on the retrospective findings.
+    validations:
+      required: false

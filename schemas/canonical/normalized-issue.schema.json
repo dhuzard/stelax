@@ -12,7 +12,7 @@
     },
     "intake_type": {
       "type": "string",
-      "enum": ["meeting", "decision", "task"]
+      "enum": ["meeting", "decision", "task", "incident", "retro", "proposal"]
     },
     "title": {
       "type": "string"
@@ -33,6 +33,16 @@
     },
     "ready_for_kanban": {
       "type": "boolean"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["p0", "p1", "p2", "p3"],
+      "description": "Priority level, set on task issues only"
+    },
+    "labels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "GitHub labels to apply: intake:<type>, triage:<decision>, priority:<level>"
     }
   },
   "required": [

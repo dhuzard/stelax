@@ -1,5 +1,8 @@
 {
   "channel_id": "engineering",
-  "description": "Standard engineering execution channel",
-  "allowed_teams": ["@your-org/engineering"]
+  "description": "Standard engineering execution channel for tasks and general work",
+  "allowed_teams": ["@your-org/engineering"],
+  "intake_types": ["task", "incident"],
+  "capabilities": ["code", "deploy", "test", "review"],
+  "max_concurrent_tasks": 5
 }

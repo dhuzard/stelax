@@ -1,0 +1,45 @@
+name: Proposal
+description: Propose a new feature, process change, or technical direction.
+title: "[Proposal]: "
+labels: ["intake:proposal"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem does this proposal solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the proposed approach.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other approaches did you consider and why were they rejected?
+    validations:
+      required: false
+  - type: textarea
+    id: success_criteria
+    attributes:
+      label: Success Criteria
+      description: How will you know this proposal succeeded?
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How urgent is this proposal?
+      options:
+        - normal
+        - high
+        - urgent
+        - low
+    validations:
+      required: false

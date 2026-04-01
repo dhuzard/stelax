@@ -18,9 +18,17 @@ jobs:
           # dummy check
           grep 'name:' .github/ISSUE_TEMPLATE/*.yml
 
-      - name: Exporter Unit Tests (Mock)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install exporter and test dependencies
         run: |
-          echo "Running mock exporter python unit tests..."
-          # In a real app run pytest or similar string
-          sleep 1
-          echo "Tests Pass"
+          cd apps/exporter
+          pip install -e ".[dev]" --quiet
+
+      - name: Run exporter unit tests
+        run: |
+          cd apps/exporter
+          python -m pytest tests/ -v

@@ -1,24 +1,215 @@
-# STELAX (Sovereign Task Execution & Linear Agentic eXchange)
+# STELAX
 
-This repository is the open-source control-plane template for:
-- structured intake via GitHub Issue Forms
-- deterministic parse/normalize/triage workflows
-- live execution through Veritas
-- isolated worker execution through NanoClaw
-- export of durable memory artifacts to a separate memory repo
-- optional downstream search through a file-based knowledge agent
+**Sovereign Task Execution & Linear Agentic eXchange**
 
-**Note:** This is a public template repository. It contains reusable glue, schemas, prompts, workflows, config examples, docs, and tests. Real runtime state and company memory should be stored in separate private repositories created from this template.
+STELAX is an open-source template that turns your GitHub repository into a structured command center — where work is submitted through forms, automatically sorted and validated, routed to execution, and permanently archived. Think of it as a disciplined operating system for teams that use AI agents to get things done.
 
-## Intended Architecture
+> This is a public template. Fork it to create your own private instance.
 
-1. `<org>-stelax`: The private instance of this repository, hosting your active workflows, intake queues, and runtime configurations.
-2. `<org>-stelax-memory`: A separate private repository serving as the durable, searchable memory store for completed tasks and decisions.
-3. `<org>-knowledge-agent`: (Optional) A downstream agent that provides search capabilities over the exported file artifacts in the memory repository.
+---
+
+## Why STELAX?
+
+Most teams accumulate tasks, decisions, and meeting notes across scattered tools — Notion pages no one reads, Slack threads that vanish, GitHub issues with no structure. When AI agents enter the mix, the problem compounds: agents need *clean, structured input* to act reliably, and they produce output that disappears the moment the session ends.
+
+STELAX solves both problems:
+
+- **Structured intake** — work enters the system through typed forms (tasks, decisions, meetings), not freeform text. No more ambiguous issues.
+- **Automatic triage** — a deterministic pipeline validates, normalizes, and routes every submission. Invalid or incomplete items are flagged before they cause problems downstream.
+- **Agent-ready execution** — approved work is pushed to [Veritas](https://github.com/your-org/veritas) (a kanban execution board) and picked up by [NanoClaw](https://github.com/your-org/nanoclaw) workers running in isolated containers.
+- **Permanent memory** — completed work is exported as structured markdown + JSON to a separate memory repository, creating an auditable, searchable archive your team (or a knowledge agent) can query later.
+
+---
+
+## How It Works
+
+```
+You submit a GitHub Issue (via form)
+        ↓
+01  Parse      — extracts structured fields from the form body
+        ↓
+02  Normalize  — converts to a canonical JSON format
+    Triage     — routes to kanban, needs-info, or rejected
+        ↓
+03  Sync       — pushes approved work to Veritas (execution board)
+        ↓
+    NanoClaw   — picks up tasks, runs them in isolated containers
+        ↓
+04  Export     — writes completed artifacts to your memory repository
+        ↓
+    Archive    — permanent, searchable record of everything that happened
+```
+
+Each step is a GitHub Actions workflow. The whole pipeline runs automatically whenever an issue is opened or updated.
+
+---
+
+## The Three-Repo Pattern
+
+STELAX is designed around three repositories that work together:
+
+| Repo | Purpose | Visibility |
+|---|---|---|
+| `<org>-stelax` | Active workflows, intake queue, runtime config | Private |
+| `<org>-stelax-memory` | Durable archive of completed work | Private |
+| `<org>-knowledge-agent` | (Optional) Search layer over the memory repo | Private |
+
+Fork this template to create `<org>-stelax`. The memory repo is created separately and written to exclusively by the automated exporter — no human (or agent) writes to it directly.
+
+---
+
+## What Gets Submitted
+
+Three structured intake types are supported out of the box:
+
+**Task** — A unit of work with an objective, requirements, and optional context. Gets routed to the execution board.
+
+**Decision** — A record of a decision made, with context and consequences. Goes straight to the archive.
+
+**Meeting** — A meeting summary with attendees, date, and outcomes. Goes straight to the archive.
+
+Each type has a corresponding GitHub Issue Form — contributors fill out a structured template instead of writing freeform text. This is the key constraint that makes the rest of the pipeline reliable.
+
+---
+
+## Repository Layout
+
+```
+stelax/
+├── .github/
+│   ├── ISSUE_TEMPLATE/       # The intake forms (meeting, decision, task)
+│   ├── PULL_REQUEST_TEMPLATE/ # PR templates for feature/infra/docs changes
+│   └── workflows/            # The 5 automated pipeline stages
+├── apps/
+│   └── exporter/             # Python service: normalize, triage, sync, export
+├── configs/
+│   ├── veritas/              # Docker Compose + config for the execution board
+│   └── nanoclaw/             # Docker Compose + mount policy for worker containers
+├── docs/                     # Architecture, threat model, acceptance tests
+├── schemas/                  # JSON schemas for intake forms and canonical data
+└── examples/                 # Sample exported memory artifact
+```
+
+---
 
 ## Getting Started
 
-See the documentation in `docs/` for runbooks and integration details:
-- `docs/architecture.md`
-- `docs/runbooks.md`
-- `docs/threat-model.md`
+### 1. Fork this template
+
+Click **Use this template** on GitHub to create your `<org>-stelax` repository.
+
+### 2. Set up secrets
+
+Add these secrets to your repository settings:
+
+| Secret | Description |
+|---|---|
+| `VERITAS_API_KEY` | API key for your Veritas instance |
+| `MEMORY_REPO_PAT` | GitHub PAT with write access to your memory repo only |
+
+### 3. Configure integrations
+
+```bash
+# Veritas
+cp configs/veritas/.env.example configs/veritas/.env
+cp configs/veritas/integrations.example.json configs/veritas/integrations.json
+
+# NanoClaw
+cp configs/nanoclaw/.env.example configs/nanoclaw/.env
+cp configs/nanoclaw/mounts.example.json configs/nanoclaw/mount_policy.json
+```
+
+Edit each file to point at your own infrastructure.
+
+### 4. Boot services
+
+```bash
+# Start Veritas
+cd configs/veritas && docker compose up -d
+
+# Start NanoClaw workers
+cd configs/nanoclaw && docker compose up -d
+```
+
+### 5. Submit your first issue
+
+Go to the **Issues** tab in your forked repo and select one of the intake forms. Fill it out and submit — the pipeline runs automatically.
+
+---
+
+## Security Design
+
+A few constraints are deliberately hard-coded and should not be changed:
+
+- **NanoClaw workers never mount `docker.sock`** — prevents a compromised container from escaping to the host.
+- **Forbidden mounts** — `~`, `/etc`, `/.ssh`, and `/var/run/docker.sock` are blocked by the mount policy.
+- **Memory repo is append-only** — only the exporter workflow has write access, via a restricted PAT scoped to that repo alone.
+- **Issue forms enforce structure** — raw markdown is never trusted. Everything is parsed through strict JSON normalization before reaching the execution board.
+
+See [`docs/threat-model.md`](docs/threat-model.md) for the full breakdown.
+
+---
+
+## Documentation
+
+| Document | What it covers |
+|---|---|
+| [`docs/architecture.md`](docs/architecture.md) | Component roles and data flow |
+| [`docs/threat-model.md`](docs/threat-model.md) | Security threats and mitigations |
+| [`docs/acceptance-tests.md`](docs/acceptance-tests.md) | Manual QA checklist for validating your instance |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | PR policy and branch conventions |
+| [`CLAUDE.md`](CLAUDE.md) | Guide for AI assistants working in this codebase |
+
+---
+
+## Roadmap & Future Ideas
+
+STELAX is intentionally minimal today — a clean foundation rather than a bloated platform. Here are directions we think are worth exploring:
+
+### Near-term
+- **Real test suite** — replace the current smoke-test stub with proper pytest coverage for the normalize, triage, and export pipeline
+- **CLI bootstrap script** — a single `bootstrap.sh` to set up a fresh fork end-to-end, including memory repo creation and secret validation
+- **Richer triage rules** — priority scoring, SLA tagging, or team-based routing based on issue metadata
+- **Webhook-driven sync** — replace the every-5-minutes polling to Veritas with an event-driven push on issue label changes
+
+### Medium-term
+- **Additional intake types** — `incident.yml`, `retro.yml`, `proposal.yml` — each with its own schema, triage path, and memory template
+- **Multi-channel NanoClaw routing** — route tasks to different worker pools based on type, team, or required capabilities
+- **Memory diff summaries** — auto-generate weekly or sprint-level summaries from the exported artifacts in the memory repo
+- **Slack / Teams notifications** — post triage results and completion events to messaging channels without coupling them into the core pipeline
+
+### Longer-term
+- **Native knowledge agent integration** — a first-class search layer over the memory repo, queryable via GitHub Issues or a lightweight UI
+- **Audit trail UI** — a read-only dashboard showing the full lifecycle of any issue, from intake form to memory export
+- **Multi-repo intake** — allow multiple `<org>-stelax` instances to feed into a shared `<org>-stelax-memory`, useful for large orgs with multiple teams
+- **Policy-as-code for triage** — replace the hardcoded Python triage logic with a declarative rules file, so teams can customize routing without touching code
+
+Have an idea not listed here? Open a discussion or issue — we'd love to hear it.
+
+---
+
+## Contributing & Community
+
+STELAX is early and deliberately open-ended. If you fork it, extend it, or hit a wall, we want to know.
+
+**Ways to get involved:**
+
+- **Try it and report back** — fork the template, run it against your own workflow, and open an issue describing what worked and what didn't
+- **Suggest a feature** — open a [GitHub Issue](../../issues/new/choose) using the Task form (yes, this repo uses its own intake forms) and describe the problem you're trying to solve
+- **Contribute a fix or improvement** — read [`CONTRIBUTING.md`](CONTRIBUTING.md), pick something from the roadmap or your own ideas, and open a PR
+- **Share your instance** — if you've built something interesting on top of STELAX, open a Discussion and tell us about it
+
+**Good first contributions:**
+
+- Add real pytest tests for `normalize_issue.py` and `triage_issue.py`
+- Add a new intake type (e.g. `incident.yml`) with schema and Jinja2 template
+- Improve error messages in the triage workflow when required fields are missing
+- Write a `bootstrap.sh` that automates the Getting Started steps above
+
+All contributions follow the one-PR-per-concern policy in [`CONTRIBUTING.md`](CONTRIBUTING.md). Infrastructure and security changes require an additional reviewer — see the PR templates for details.
+
+---
+
+## License
+
+MIT

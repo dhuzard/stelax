@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Incident Issue Schema",
+  "properties": {
+    "severity": {
+      "type": "string",
+      "enum": ["sev0", "sev1", "sev2", "sev3"]
+    },
+    "impact": { "type": "string" },
+    "timeline": { "type": "string" },
+    "resolution": { "type": "string" },
+    "action_items": { "type": "string" }
+  },
+  "required": ["severity", "impact"]
+}
