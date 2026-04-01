@@ -1,0 +1,51 @@
+{
+  "_comment": "Copy this file to routing.json and adjust to match your team structure. Rules are evaluated top-to-bottom — first match wins. A rule matches when all present conditions (intake_type, priority) match the issue. Omit a condition to match any value.",
+  "rules": [
+    {
+      "_comment": "P0/P1 incidents go to the dedicated incident response channel",
+      "intake_type": "incident",
+      "priority": ["p0", "p1"],
+      "channel": "incidents"
+    },
+    {
+      "_comment": "Lower-severity incidents handled by standard engineering",
+      "intake_type": "incident",
+      "channel": "engineering"
+    },
+    {
+      "_comment": "P0 tasks escalate to founders for immediate visibility",
+      "intake_type": "task",
+      "priority": ["p0"],
+      "channel": "founders"
+    },
+    {
+      "_comment": "Standard tasks go to engineering",
+      "intake_type": "task",
+      "channel": "engineering"
+    },
+    {
+      "_comment": "Proposals require founder review before execution",
+      "intake_type": "proposal",
+      "channel": "founders"
+    },
+    {
+      "_comment": "Decisions are logged with founder visibility",
+      "intake_type": "decision",
+      "channel": "founders"
+    },
+    {
+      "_comment": "Retros are async low-urgency work",
+      "intake_type": "retro",
+      "channel": "operations"
+    },
+    {
+      "_comment": "Meeting summaries are async operational work",
+      "intake_type": "meeting",
+      "channel": "operations"
+    },
+    {
+      "_comment": "Catch-all fallback for any unmatched type",
+      "channel": "engineering"
+    }
+  ]
+}

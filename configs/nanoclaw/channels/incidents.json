@@ -1,0 +1,8 @@
+{
+  "channel_id": "incidents",
+  "description": "Dedicated incident response channel — always-on, highest priority queue",
+  "allowed_teams": ["@your-org/engineering", "@your-org/founders"],
+  "intake_types": ["incident"],
+  "capabilities": ["code", "deploy", "rollback", "hotfix", "notify"],
+  "max_concurrent_tasks": 10
+}

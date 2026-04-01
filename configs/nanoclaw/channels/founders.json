@@ -1,5 +1,8 @@
 {
   "channel_id": "founders",
-  "description": "Restricted channel for operations requiring founder approval",
-  "allowed_teams": ["@your-org/founders"]
+  "description": "Restricted channel for high-stakes work requiring founder visibility",
+  "allowed_teams": ["@your-org/founders"],
+  "intake_types": ["task", "proposal", "decision"],
+  "capabilities": ["code", "deploy", "review", "approve"],
+  "max_concurrent_tasks": 2
 }

@@ -1,0 +1,8 @@
+{
+  "channel_id": "operations",
+  "description": "Async channel for low-urgency operational work: retros and meetings",
+  "allowed_teams": ["@your-org/engineering"],
+  "intake_types": ["retro", "meeting"],
+  "capabilities": ["summarise", "archive", "notify"],
+  "max_concurrent_tasks": 3
+}
