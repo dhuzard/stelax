@@ -1,0 +1,17 @@
+# Audit Trail: #{{ artifact.source_issue_number }} — {{ artifact.type | capitalize }}
+
+**Artifact:** `{{ artifact.artifact_id }}`
+**Source:** [#{{ artifact.source_issue_number }}]({{ artifact.source_issue_url }})
+**Exported:** {{ artifact.export_timestamp }}
+_Generated: {{ generated_at }}_
+
+---
+
+## Lifecycle
+
+{% for event in events %}
+### {{ loop.index }}. {{ event.label }}
+{% if event.timestamp %}**Timestamp:** {{ event.timestamp }}
+{% endif %}{% if event.detail %}**Detail:** {{ event.detail }}
+{% endif %}
+{% endfor %}
