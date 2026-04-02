@@ -1,0 +1,49 @@
+name: 07 Build Search Index
+
+on:
+  workflow_run:
+    workflows: ["04 Export Memory"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout STELAX repo
+        uses: actions/checkout@v4
+        with:
+          path: stelax-repo
+
+      - name: Checkout memory repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ github.repository_owner }}-stelax-memory
+          token: ${{ secrets.MEMORY_REPO_PAT }}
+          path: memory-repo
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install exporter
+        run: |
+          cd stelax-repo/apps/exporter
+          pip install -e . --quiet
+
+      - name: Build search index
+        run: |
+          python stelax-repo/apps/exporter/exporter/build_index.py \
+            --memory-dir memory-repo
+
+      - name: Commit and push index
+        run: |
+          cd memory-repo
+          git config user.name "STELAX Exporter"
+          git config user.email "stelax-exporter@noreply"
+          git add search-index.json
+          git diff --cached --quiet || git commit -m "chore: rebuild search index"
+          git push
