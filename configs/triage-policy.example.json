@@ -1,0 +1,45 @@
+{
+  "_comment": "Copy this file to triage-policy.json and adjust to suit your team. Only keys you include will override the built-in defaults — omit a section to keep its default behaviour. Pass the file path to load_policy() in triage_issue.py.",
+
+  "required_fields": {
+    "task":     ["Objective", "Requirements"],
+    "meeting":  ["Date", "Attendees", "Summary"],
+    "decision": ["Context", "Decision"],
+    "incident": ["Severity", "Impact"],
+    "retro":    ["Period", "What Went Well", "What Didn't Go Well"],
+    "proposal": ["Problem", "Proposed Solution"]
+  },
+
+  "priority_typed": ["task", "proposal", "incident"],
+
+  "default_priority": "p2",
+
+  "explicit_priority_map": {
+    "urgent": "p0",
+    "high":   "p1",
+    "normal": "p2",
+    "low":    "p3",
+    "p0": "p0",
+    "p1": "p1",
+    "p2": "p2",
+    "p3": "p3"
+  },
+
+  "severity_priority_map": {
+    "sev0": "p0",
+    "sev1": "p0",
+    "sev2": "p1",
+    "sev3": "p2"
+  },
+
+  "priority_keywords": {
+    "p0": ["critical", "blocker", "outage", "p0", "sev0", "sev1"],
+    "p1": ["urgent", "asap", "high priority", "high", "important", "p1"],
+    "p3": ["low priority", "low", "minor", "nice to have", "p3"]
+  },
+
+  "keyword_scan_fields": {
+    "task":     ["Objective", "Requirements"],
+    "proposal": ["Problem", "Proposed Solution"]
+  }
+}
