@@ -1,0 +1,32 @@
+{
+  "_comment": "Example configuration for multi-repo intake. Each entry represents one <org>-stelax fork contributing to the shared memory repository. Add this file to your automation or documentation repo for reference.",
+
+  "shared_memory_repo": "<org>-stelax-memory",
+
+  "forks": [
+    {
+      "namespace":    "team-a",
+      "repo":         "<org>/team-a-stelax",
+      "description":  "Engineering team A",
+      "nanoclaw_channels": ["engineering", "incidents"],
+      "triage_policy": "configs/triage-policy.json"
+    },
+    {
+      "namespace":    "team-b",
+      "repo":         "<org>/team-b-stelax",
+      "description":  "Product team B",
+      "nanoclaw_channels": ["engineering", "founders"],
+      "triage_policy": "configs/triage-policy.json"
+    },
+    {
+      "namespace":    "team-c",
+      "repo":         "<org>/team-c-stelax",
+      "description":  "Infrastructure team C",
+      "nanoclaw_channels": ["engineering", "incidents", "operations"],
+      "triage_policy": "configs/triage-policy.json"
+    }
+  ],
+
+  "search_index_runner": "team-a",
+  "_comment_runner": "Which fork runs 07-build-search-index.yml against the full shared memory repo."
+}
